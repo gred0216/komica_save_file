@@ -52,20 +52,29 @@ def save_file():
                            strftime('%Y-%m-%d_%H-%M', localtime()))
         else:
             folder_name = title + strftime('%Y-%m-%d_%H-%M', localtime())
-        download_path = get_download_path()
-        os.makedirs(download_path + "\\" + folder_name, exist_ok=True)
-        file_text = soup.find_all(class_='file-text')
-        for file in file_text:
-            pic_link = file.a.get('href')
+        download_path = get_download_path() + "\\" + folder_name
+        os.makedirs(download_path, exist_ok=True)
+        file_thumb = soup.find_all(class_='file-thumb')
+        failed = []
+        file_num = len(file_thumb)
+        for file in file_thumb:
+            pic_link = file.get('href')
             pic = urljoin(url, pic_link)
-            file_name = file.a.text
-            res = requests.get(pic, stream=True)
-            with open(download_path + '\\' + folder_name +
-                      '\\' + file_name, 'wb') as output:
-                shutil.copyfileobj(res.raw, output)
-            del res
-            sleep(0.5)
-    print('Download finished in %.2fs' % float(time() - start))
+            file_name = re.search('src\/(\d*\..*)', pic_link)[1]
+            try:
+                res = requests.get(pic, stream=True)
+                with open(download_path + '\\' + file_name, 'wb') as output:
+                    shutil.copyfileobj(res.raw, output)
+                del res
+            except Exception as e:
+                failed.append(pic + '\n')
+            finally:
+                sleep(0.5)
+    print('%d of %d files successfully downloaded in %.2fs' %
+          (file_num - len(failed), file_num, float(time() - start)))
+    if not failed:
+        with open(download_path + '\\failed_files.txt', 'w+') as f:
+            f.write(failed)
 
 
 if __name__ == '__main__':
