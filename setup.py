@@ -2,7 +2,7 @@ from distutils.core import setup
 
 
 setup(name='komica_save_file',
-      version='1.0.4',
+      version='1.0.5',
       description='save files from komica',
       keywords=('komica'),
       author='gred0216',
@@ -13,5 +13,5 @@ setup(name='komica_save_file',
                    'Programming Language :: Python :: 3.6'],
       python_requires='>=3',
       url='https://github.com/gred0216/komica_save_file',
-      download_url='https://github.com/gred0216/komica_save_file/archive/1.0.4.tar.gz',
+      download_url='https://github.com/gred0216/komica_save_file/archive/1.0.5.tar.gz',
       )

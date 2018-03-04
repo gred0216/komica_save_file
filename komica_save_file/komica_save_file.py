@@ -44,14 +44,15 @@ def save_file():
     else:
         soup = BeautifulSoup(r.text)
         title = soup.find('h1').text + '_'
+        now_time = strftime('%Y-%m-%d_%H-%M', localtime())
         if 'htm' in url:
-            folder_name = (title + re.search('\d/(.*?).htm', url)[1] + '_' +
-                           strftime('%Y-%m-%d_%H-%M', localtime()))
+            folder_name = (title + re.search('\d/(.*?).htm', url)[1] +
+                           '_' + now_time)
         elif 'res' in url:
-            folder_name = (title + re.search('res=(\d*)', url)[1] + '_' +
-                           strftime('%Y-%m-%d_%H-%M', localtime()))
+            folder_name = (title + re.search('res=(\d*)', url)[1] +
+                           '_' + now_time)
         else:
-            folder_name = title + strftime('%Y-%m-%d_%H-%M', localtime())
+            folder_name = title + now_time
         download_path = get_download_path() + "\\" + folder_name
         os.makedirs(download_path, exist_ok=True)
         file_thumb = soup.find_all(class_='file-thumb')
@@ -72,9 +73,10 @@ def save_file():
                 sleep(0.5)
     print('%d of %d files successfully downloaded in %.2fs' %
           (file_num - len(failed), file_num, float(time() - start)))
-    if not failed:
+    if failed:
         with open(download_path + '\\failed_files.txt', 'w+') as f:
-            f.write(failed)
+            for i in failed:
+                f.write(i)
 
 
 if __name__ == '__main__':
