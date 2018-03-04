@@ -15,6 +15,19 @@ pat = re.compile(r'^(?:http|ftp)s?://'  # http:// or https://
                  r'(?:/?|[/?]\S+)$', re.IGNORECASE)
 
 
+def get_download_path():
+    """Returns the default downloads path for linux or windows"""
+    if os.name == 'nt':
+        import winreg
+        sub_key = r'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders'
+        downloads_guid = '{374DE290-123F-4565-9164-39C4925E467B}'
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, sub_key) as key:
+            location = winreg.QueryValueEx(key, downloads_guid)[0]
+        return location
+    else:
+        return os.path.join(os.path.expanduser('~'), 'downloads')
+
+
 def save_file():
     print('Please enter url')
     while True:
@@ -39,14 +52,16 @@ def save_file():
                            strftime('%Y-%m-%d_%H-%M', localtime()))
         else:
             folder_name = title + strftime('%Y-%m-%d_%H-%M', localtime())
-        os.makedirs("./" + folder_name, exist_ok=True)
+        download_path = get_download_path()
+        os.makedirs(download_path + "\\" + folder_name, exist_ok=True)
         file_text = soup.find_all(class_='file-text')
         for file in file_text:
             pic_link = file.a.get('href')
             pic = urljoin(url, pic_link)
-            name = file.a.text
+            file_name = file.a.text
             res = requests.get(pic, stream=True)
-            with open('./' + folder_name + '/' + name, 'wb') as output:
+            with open(download_path + '\\' + folder_name +
+                      '\\' + file_name, 'wb') as output:
                 shutil.copyfileobj(res.raw, output)
             del res
             sleep(0.5)

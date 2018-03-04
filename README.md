@@ -4,7 +4,7 @@
 
 Save picture or uploaded file from [komica](https://komica.org/)
 
-Every file on the current page will be download to a new folder under current working directory
+Every file on the current page will be download to a new folder under default download directory
 
 Folder naming rule: board-name_index/thread-number_localtime
 
@@ -17,7 +17,7 @@ For example
 
 下載本地版上傳的圖檔或附件
 
-當前頁面的所有檔案會保存在目前工作路徑下的新資料夾內
+當前頁面的所有檔案會保存在預設下載資料夾內的新資料夾
 
 資料夾命名規則： 版名_index/討論串編號_當地時間
 
